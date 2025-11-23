@@ -4,7 +4,7 @@ import tensorflow as tf
 import os
 
 class Dataset:
-    def __init__(self, video_dir, output_dir, resize=(448, 256), frame_skip=4, group_stride=2, max_frames=None, test_ratio=0.2, img_quality=90, batch_size=16):
+    def __init__(self, video_dir, output_dir, resize=(448, 256), frame_skip=4, group_stride=2, max_frames=None, test_ratio=0.2, img_quality=90, batch_size=16, skip_processing=False):
         self.video_dir = video_dir
         self.output_dir = output_dir
         self.resize = resize
@@ -18,23 +18,27 @@ class Dataset:
         os.makedirs(output_dir, exist_ok=True)
         self.video_files = [f for f in os.listdir(video_dir) if f.endswith(".mp4")]
         
-        self.train_file, self.test_file = process_videos(
-            self.video_files,
-            self.video_dir,
-            self.output_dir,
-            resize=self.resize,
-            frame_skip=self.frame_skip,
-            group_stride=self.group_stride,
-            max_frames=self.max_frames,
-            test_ratio=self.test_ratio,
-            img_quality=self.img_quality
-        )
+        if not skip_processing:
+            self.train_file, self.test_file = process_videos(
+                self.video_files,
+                self.video_dir,
+                self.output_dir,
+                resize=self.resize,
+                frame_skip=self.frame_skip,
+                group_stride=self.group_stride,
+                max_frames=self.max_frames,
+                test_ratio=self.test_ratio,
+                img_quality=self.img_quality
+            )
+        else:
+            self.train_file = os.path.join(output_dir, "train.txt")
+            self.test_file = os.path.join(output_dir, "test.txt")
 
     def create_dataset(self, list_file_path, is_training=True):
         with open(list_file_path, 'r') as f:
             path_suffixes = [line.strip() for line in f.readlines()]
 
-        dataset = tf.data.Dataset.from_tensor_slices(path_suffixes)
+        dataset = tf.data.Dataset.from_tensor_slices(path_suffixes[:len(path_suffixes)//10])
         dataset = dataset.map(lambda x: tf.py_function(load_triplet, [x], [tf.float32, tf.float32]),
                             num_parallel_calls=tf.data.AUTOTUNE)
 

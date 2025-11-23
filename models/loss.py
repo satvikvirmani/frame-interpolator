@@ -12,19 +12,15 @@ feature_extractor = tf.keras.Model(
 )
 
 def perceptual_loss(y_true, y_pred):
-    # Resize batch (B,H,W,3) → (B, 224, 224, 3)
     y_true_resized = tf.image.resize(y_true, (224, 224))
     y_pred_resized = tf.image.resize(y_pred, (224, 224))
 
-    # Convert to 0–255 and preprocess for VGG
     y_true_vgg = tf.keras.applications.vgg19.preprocess_input(y_true_resized * 255.0)
     y_pred_vgg = tf.keras.applications.vgg19.preprocess_input(y_pred_resized * 255.0)
 
-    # Extract VGG features (batch supported — no expand_dims)
     true_features = feature_extractor(y_true_vgg)
     pred_features = feature_extractor(y_pred_vgg)
 
-    # Feature loss
     loss = 0.0
     for t, p in zip(true_features, pred_features):
         loss += tf.reduce_mean(tf.abs(t - p))

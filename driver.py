@@ -14,9 +14,10 @@ dataset = Dataset(
     max_frames=1000,
     test_ratio=0.2,
     img_quality=90,
-    batch_size=1
+    batch_size=1,
+    skip_processing=True
 )
-train_ds, val_ds = dataset.get_datasets()
+train_ds, test_ds = dataset.get_datasets()
 
 unet = UNet(img_height=256, img_width=448)
 
@@ -25,4 +26,7 @@ trainer = Trainer(
     optimizer=optimizer_with_cosine_annealing,
     loss_fn=combined_loss
 )
-trainer.train_model(train_ds, val_ds, epochs=50)
+trainer.set_dataset(train_ds, test_ds)
+# trainer.train_model(epochs=50)
+# trainer.test_model()
+trainer.visualize(save_dir='data/visualize')
