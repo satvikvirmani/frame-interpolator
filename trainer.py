@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tqdm import tqdm
+from tqdm.notebook import tqdm
 import os
 
 class Trainer:

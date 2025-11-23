@@ -38,7 +38,7 @@ class Dataset:
         with open(list_file_path, 'r') as f:
             path_suffixes = [line.strip() for line in f.readlines()]
 
-        dataset = tf.data.Dataset.from_tensor_slices(path_suffixes[:len(path_suffixes)//10])
+        dataset = tf.data.Dataset.from_tensor_slices(path_suffixes)
         dataset = dataset.map(lambda x: tf.py_function(load_triplet, [x], [tf.float32, tf.float32]),
                             num_parallel_calls=tf.data.AUTOTUNE)
 

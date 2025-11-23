@@ -1,4 +1,4 @@
-from tqdm import tqdm
+from tqdm.notebook import tqdm
 import random as random
 from math import floor
 import os as os
