@@ -1,5 +1,8 @@
 import tensorflow as tf
+#In notebook mode use tqdm.notebook
 from tqdm.notebook import tqdm
+#In script mode use tqdm
+#from tqdm import tqdm 
 import os
 
 class Trainer:

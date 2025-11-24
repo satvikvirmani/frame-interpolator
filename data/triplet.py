@@ -1,5 +1,7 @@
+#In notebook mode use tqdm.notebook
 from tqdm.notebook import tqdm
-import random as random
+#In script mode use tqdm
+#from tqdm import tqdm import random as random
 from math import floor
 import os as os
 import time as time

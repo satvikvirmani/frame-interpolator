@@ -14,7 +14,7 @@ dataset = Dataset(
     max_frames=1000,
     test_ratio=0.2,
     img_quality=90,
-    batch_size=1,
+    batch_size=16,
     skip_processing=True
 )
 train_ds, test_ds = dataset.get_datasets()
